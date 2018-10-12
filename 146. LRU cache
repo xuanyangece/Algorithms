@@ -1,0 +1,150 @@
+class DLinkedListNode {
+    DLinkedListNode prev;
+    DLinkedListNode next;
+    int key;
+    int value;
+    
+    public DLinkedListNode(DLinkedListNode prev, DLinkedListNode next, int key, int value) {
+        this.prev = prev;       // BUG 1
+        this.next = next;
+        this.key = key;
+        this.value = value;
+    }
+}
+
+
+
+
+class LRUCache {
+    HashMap<Integer, DLinkedListNode> map;
+    int capacity;
+    int size;
+    DLinkedListNode head;       // least recent
+    DLinkedListNode tail;       // most recent
+
+        public static void removeNode(DLinkedListNode node) {
+        if (node == null) {
+            return;
+        }
+
+        if (node.prev != null) {
+            node.prev.next = node.next;
+        }
+        if (node.next != null) {
+            node.next.prev = node.prev;
+        }
+
+        node.prev = null;
+        node.next = null;
+    }
+
+    public static void concaNode(DLinkedListNode node1, DLinkedListNode node2) {
+        if (node1 == null || node2 == null) {
+            return;
+        }
+
+        // at tail
+        if (node1.next == null) {
+            node1.next = node2;
+            node2.prev = node1;
+            node2.next = null;
+        } else {
+            DLinkedListNode temp = node1.next;
+            node1.next = node2;
+            temp.prev = node2;
+            node2.prev = node1;
+            node2.next = temp;
+        }
+    }
+    
+    public LRUCache(int capacity) {
+        map = new HashMap<Integer, DLinkedListNode>();
+        this.capacity = capacity;       // BUG 2
+        size = 0;
+        head = null;
+        tail = null;
+    }
+    
+    public int get(int key) {
+        // if not containsKey, what to return?
+        if (map.containsKey(key) == false) {
+            return -1;
+        }
+        
+        // find
+        DLinkedListNode target = map.get(key);
+        
+        if (tail != target) {
+            if (head == target) {
+                head = head.next;
+            }
+            
+            // remove
+            removeNode(target);
+
+            // insert & update tail
+            concaNode(tail, target);
+            tail = target;
+        }
+        
+        return target.value;
+    }
+    
+    public void put(int key, int value) {
+        if (size == 0) {
+            head = new DLinkedListNode(null, null, key, value);
+            tail = head;
+            map.put(key, head);
+            
+            size++;
+            return;
+        }
+        
+        if (map.containsKey(key)) {
+            DLinkedListNode repeat = map.get(key);
+            
+            if (tail == repeat) {
+                // renew value without moving
+                tail.value = value;
+                return;
+            }
+            
+            if (head == repeat) {
+                head = head.next;
+            }
+            
+            repeat.value = value;
+            removeNode(repeat);
+            concaNode(tail, repeat);
+            tail = repeat;
+            return;
+        }
+        
+        if (size == capacity) {
+            DLinkedListNode delete = head;
+            head = head.next;
+            
+            // delete from HashMap & List
+            map.remove(delete.key);
+            removeNode(delete);
+            
+            size--;
+        } 
+        
+        DLinkedListNode newNode = new DLinkedListNode(null, null, key, value);
+        concaNode(tail, newNode);
+        
+        // renew HashMap & Tail
+        map.put(key, newNode);
+        tail = newNode;
+        
+        size++;
+    }
+}
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache obj = new LRUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */
