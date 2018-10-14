@@ -1,0 +1,27 @@
+// Heap + HashSet
+class Solution {
+    public int nthUglyNumber(int n) {
+        if (n <= 0 ) return -1;
+        
+        // use long to avoid overflow
+        
+        Set<Long> set = new HashSet<Long>();
+        Queue<Long> pq = new PriorityQueue<Long>();
+        Long[] ugly = {Long.valueOf(2), Long.valueOf(3), Long.valueOf(5)};
+        
+        Long res = Long.valueOf(0);
+        pq.offer(Long.valueOf(1));
+        for (int i = 0; i < n; i++) {
+            res = pq.poll();
+            for (int j = 0; j < 3; j++) {
+                Long addNum = res * ugly[j];
+                if (!set.contains(addNum) && addNum > 0) {
+                    set.add(addNum);
+                    pq.offer(addNum);
+                }
+            }
+        }
+        
+        return res.intValue();
+    }
+}
