@@ -1,0 +1,23 @@
+class Solution {
+    public int nthUglyNumber(int n) {
+        if (n <= 0 ) return -1;
+        
+        // scan
+        
+        // initialize
+        List<Integer> ugly = new ArrayList<Integer>();
+        ugly.add(1);
+        
+        int p2 = 0, p3 = 0, p5 = 0;
+        
+        for (int i = 1; i < n; i++) {
+            int curr = ugly.get(i-1);
+            while (ugly.get(p2) * 2 <= curr) p2++;
+            while (ugly.get(p3) * 3 <= curr) p3++;
+            while (ugly.get(p5) * 5 <= curr) p5++;
+            ugly.add(Math.min(ugly.get(p2) * 2, Math.min(ugly.get(p3) * 3, ugly.get(p5) * 5)));
+        }
+        
+        return ugly.get(n-1);
+    }
+}
