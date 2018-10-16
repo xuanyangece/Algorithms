@@ -1,0 +1,21 @@
+class Solution {
+    public int kthSmallest(int[][] matrix, int k) {
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0 || k <= 0) return Integer.MIN_VALUE;
+        Queue<Integer> small = new PriorityQueue<Integer>(k, Collections.reverseOrder());
+        
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                if (small.size() == k) {
+                    if (small.peek() > matrix[i][j]) {
+                        small.poll();
+                    } else {
+                        continue;
+                    }
+                }
+                small.offer(matrix[i][j]);
+            }
+        }
+        
+        return small.peek();
+    }
+}
