@@ -1,0 +1,13 @@
+// sort
+class Solution {
+    public List<String> topKFrequent(String[] words, int k) {
+        HashMap<String, Integer> map = new HashMap<String, Integer>();
+        for (String s: words) {
+            map.put(s, map.getOrDefault(s, 0) + 1);
+        }
+        ArrayList<String> ans = new ArrayList<String>(map.keySet());
+        Collections.sort(ans, (m1, m2) -> map.get(m1).equals(map.get(m2)) ? m1.compareTo(m2) : map.get(m2) - map.get(m1));
+        
+        return ans.subList(0, k);
+    }
+}
