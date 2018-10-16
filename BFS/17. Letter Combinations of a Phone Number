@@ -1,0 +1,22 @@
+class Solution {
+    public List<String> letterCombinations(String digits) {
+        
+        // BFS linkedlist as FIFO queue
+        LinkedList<String> ans = new LinkedList<String>();
+        String[] map = {"0", "1", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+        if (digits == null || digits.length() == 0) return ans;
+        ans.add("");
+        
+        for (int i = 0; i < digits.length(); i++) {
+            int x = Character.getNumericValue(digits.charAt(i));
+            while (ans.peek().length() == i) {
+                String t = ans.remove();            // head
+                for (char s: map[x].toCharArray()) {
+                    ans.add(t+s);                   // tail
+                }
+            }
+        }
+        
+        return ans;
+    }
+}
