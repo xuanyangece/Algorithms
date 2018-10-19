@@ -1,0 +1,44 @@
+ * class GraphNode {
+ *     int label;
+ *     ArrayList<UndirectedGraphNode> neighbors;
+ *     UndirectedGraphNode(int x) { 
+ *         label = x; neighbors = new ArrayList<UndirectedGraphNode>(); 
+ *     }
+ * };
+ */
+public class Solution {
+    /**
+     * @param graph: a list of Undirected graph node
+     * @param A: nodeA
+     * @param B: nodeB
+     * @return:  the length of the shortest path
+     */
+    public int shortestPath(List<UndirectedGraphNode> graph, UndirectedGraphNode A, UndirectedGraphNode B) {
+        // Write your code here
+        if (graph == null || A == null || B == null) {
+        	return 0;
+    	}
+    
+    	HashSet<UndirectedGraphNode> existed = new HashSet<>();
+    	Queue<UndirectedGraphNode> queue = new LinkedList<>();
+    	existed.add(A);
+    	queue.offer(A);
+
+    	int distance = 0;
+    	while (!queue.isEmpty()) {
+    		distance++;
+    		int size = queue.size();
+    		for (int i = 0; i < size; i++) {
+    			UndirectedGraphNode curt = queue.poll();
+    			for (UndirectedGraphNode neighbor: curt.neighbors) {
+    			    if (existed.contains(neighbor)) continue;
+    			    if (B.label == neighbor.label) return distance;
+    			    existed.add(neighbor);
+    			    queue.offer(neighbor);
+    			}
+    		}
+    	}
+    	
+	    return -1;
+    }
+}
