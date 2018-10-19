@@ -1,0 +1,56 @@
+/**
+ * Definition for undirected graph.
+ * class UndirectedGraphNode {
+ *     int label;
+ *     List<UndirectedGraphNode> neighbors;
+ *     UndirectedGraphNode(int x) { label = x; neighbors = new ArrayList<UndirectedGraphNode>(); }
+ * };
+ */
+public class Solution {
+    public UndirectedGraphNode cloneGraph(UndirectedGraphNode node) {
+        if (node == null) return null;
+        
+        // find all nodes in original map
+        List<UndirectedGraphNode> nodes = bfs(node);
+        
+        // create new code, map in hash map
+        HashMap<UndirectedGraphNode, UndirectedGraphNode> oldToNew = new HashMap<>();
+        for (int i = 0; i < nodes.size(); i++) {
+            UndirectedGraphNode curtNode = nodes.get(i);
+            UndirectedGraphNode newNode = new UndirectedGraphNode(curtNode.label);
+            oldToNew.put(curtNode, newNode);
+        }
+        
+        // update neighbors
+        for (UndirectedGraphNode curtNode: nodes) {
+            UndirectedGraphNode newNode = oldToNew.get(curtNode);
+            for (UndirectedGraphNode neighbor: curtNode.neighbors) {
+                newNode.neighbors.add(oldToNew.get(neighbor));
+            }
+        }
+        
+        return oldToNew.get(node);
+    }
+    
+    private List<UndirectedGraphNode> bfs(UndirectedGraphNode node) {
+        if (node == null) return null;
+        
+        HashSet<UndirectedGraphNode> set = new HashSet<>();
+        Queue<UndirectedGraphNode> queue = new LinkedList<>();
+        
+        queue.offer(node);
+        set.add(node);
+        while (!queue.isEmpty()) {
+            UndirectedGraphNode curtNode = queue.poll();
+            for (UndirectedGraphNode nextNode: curtNode.neighbors) {
+                if (set.contains(nextNode)) {
+                    continue;
+                }
+                set.add(nextNode);
+                queue.offer(nextNode);
+            }
+        }
+        
+        return new ArrayList<UndirectedGraphNode> (set);
+    }
+}
