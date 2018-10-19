@@ -1,0 +1,56 @@
+class Solution {
+    public List<List<String>> solveNQueens(int n) {
+        if (n <= 0) return null;
+        
+        List<List<String>> answer = new LinkedList();
+        
+        backtrack(answer, new LinkedList(), n);
+        return answer;
+    }
+    
+    private void backtrack(List answer, List temp, int n) {
+        if (temp.size() == n) {
+            if (isValid(temp, n)) answer.add(new LinkedList(temp));
+        } else {
+            for (int i = 0; i < n; i++) {
+                //generate string
+                String curt = buildString(i, n);
+                //see if contains
+                if (temp.contains(curt)) continue;
+                //if not, put it, trackback, remove
+                temp.add(curt);
+                backtrack(answer, temp, n);
+                temp.remove(temp.size() - 1);
+            }
+        }
+    }
+    
+    private String buildString(int QIndex, int n) {
+        StringBuilder sb = new StringBuilder();
+        for (int j = 0; j < n; j++) {
+            sb.append('.');
+        }
+        return new String(sb.replace(QIndex, QIndex+1, "Q"));
+    }
+    
+    private boolean isValid(List<String> board, int n) {
+        // map occurance of Q
+        int[] map = new int[n];
+        for (int i = 0; i < n; i++) {
+            int indexQ = board.get(i).indexOf("Q");
+            map[i] = indexQ;
+        }
+        
+        // for each row, determine whether rows before collision
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                int indexUp = map[j];
+                int indexDown = map[i];
+                if (indexUp == indexDown) return false;
+                if (indexUp + j == indexDown + i) return false;
+                if (indexUp - j == indexDown - i) return false;
+            }
+        }
+        return true;
+    }
+}
