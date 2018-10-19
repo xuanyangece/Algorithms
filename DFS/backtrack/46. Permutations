@@ -1,0 +1,22 @@
+class Solution {
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> answer = new LinkedList<>();
+        if (nums == null || nums.length == 0) return answer;
+        
+        backtrack(answer, new LinkedList<Integer>(), nums);
+        return answer;
+    }
+    
+    private void backtrack(List<List<Integer>> answer, List<Integer> temp, int[] nums) {
+        if (temp.size() == nums.length) {
+            answer.add(new LinkedList(temp));
+        } else {
+            for (int i = 0; i < nums.length; i++) {
+                if (temp.contains(nums[i])) continue;
+                temp.add(nums[i]);
+                backtrack(answer, temp, nums);
+                temp.remove(temp.size() - 1);
+            }
+        }
+    }
+}
