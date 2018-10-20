@@ -1,0 +1,61 @@
+class Solution {
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        if (wordList == null || !wordList.contains(endWord)) return 0;
+        
+        // get new dict
+        HashSet<String> dict = new HashSet();
+        for (String word: wordList) {
+            dict.add(word);
+        }
+            
+        // initialize queue
+        Queue<String> queue = new LinkedList();
+        HashSet<String> duplicate = new HashSet();
+        queue.offer(beginWord);
+        duplicate.add(beginWord);
+        
+        // bfs
+        int length = 1;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            length++;
+            for (int i = 0; i < size; i++) {
+                for (String nextWord: getNextWords(queue.poll(), dict)) {
+                    if (nextWord.equals(endWord)) {
+                        return length;
+                    }
+                    if (duplicate.contains(nextWord)) {
+                        continue;
+                    }
+                    queue.offer(nextWord);
+                    duplicate.add(nextWord);
+                }
+            }
+        }
+        
+        return 0;
+    }
+    
+    // remember this method, for every character, not for every word in dict
+    private List<String> getNextWords(String curtWord, HashSet dict) {
+        ArrayList<String> answer = new ArrayList();
+        for (char i = 'a'; i <= 'z'; i++) {
+            for (int j = 0; j < curtWord.length(); j++) {
+                if (i == curtWord.charAt(j)) {
+                    continue;
+                }
+                String newWord = replace(curtWord, j, i);
+                if (dict.contains(newWord)) {
+                    answer.add(newWord);
+                }
+            }
+        }
+        return answer;
+    }
+    
+    private String replace(String s, int index, char c) {
+        char[] chars = s.toCharArray();
+        chars[index] = c;
+        return new String(chars);
+    }
+}
