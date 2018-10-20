@@ -12,7 +12,7 @@ class Solution {
         // initialize ladder and map
         List<List<String>> ladders = new ArrayList();
         HashMap<String, List<String>> map = new HashMap();
-        HashMap<String, Integer> distance = new HashMap();      // shorest distance of every node to end node
+        HashMap<String, Integer> distance = new HashMap();      // shorest distance from start to every noce
         
         if (wordList == null || !wordList.contains(endWord)) return ladders;
         
@@ -38,7 +38,7 @@ class Solution {
             
             List<String> nextWords = getNextWords(curt, dict);
             for (String nextWord: nextWords) {
-                map.get(nextWord).add(curt);
+                map.get(curt).add(nextWord);
                 if (!distance.containsKey(nextWord)) {
                     distance.put(nextWord, distance.get(curt) + 1);
                     queue.offer(nextWord);
