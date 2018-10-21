@@ -1,0 +1,22 @@
+class Solution {
+    int best;
+    public int minimumTotal(List<List<Integer>> triangle) {
+        if (triangle == null) {
+            return 0;
+        }
+        best = Integer.MAX_VALUE;
+        dfs(triangle, 0, 0, 0);
+        return best;
+    }
+    
+    private void dfs(List<List<Integer>> triangle, int x, int y, int sum) {
+        int n = triangle.size();
+        
+        if (x == n) {
+            best = Math.min(best, sum);
+            return;
+        }
+        dfs(triangle, x+1, y, sum + triangle.get(x).get(y));
+        dfs(triangle, x+1, y+1, sum + triangle.get(x).get(y));
+    }
+}
