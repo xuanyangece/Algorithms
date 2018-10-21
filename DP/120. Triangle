@@ -1,0 +1,59 @@
+// Version 1: bottom to top
+class Solution {
+    public int minimumTotal(List<List<Integer>> triangle) {
+        if (triangle == null) return 0;
+        
+        // state - bottom to current min sum
+        int row = triangle.size();
+        int col = triangle.get(row-1).size();
+        int[][] function = new int[row][col];
+        
+        // initialize - bottom to it's value
+        for (int i = 0; i < col; i++) {
+            function[row-1][i] = triangle.get(row-1).get(i);
+        }
+        
+        // function - function[i][j] = min(function[i+1][j], function[i+1][j+1]) + triangle.get(i).get(j)
+        for (int i = row - 2; i >= 0; i--) {
+            for (int j = 0; j < triangle.get(i).size(); j++) {
+                function[i][j] = Math.min(function[i+1][j], function[i+1][j+1]) + triangle.get(i).get(j);
+            }
+        }
+        
+        // end
+        return function[0][0];
+    }
+}
+
+// Version 2: top to bottom
+class Solution {
+    public int minimumTotal(List<List<Integer>> triangle) {
+        if (triangle == null) return 0;
+        
+        // state - top to current min sum
+        int row = triangle.size();
+        int col = triangle.get(row-1).size();
+        int[][] function = new int[row][col];
+        
+        // initialize - top and two sides of triangle
+        function[0][0] = triangle.get(0).get(0);
+        for (int i = 1; i < row; i++) {
+            function[i][0] = function[i-1][0] + triangle.get(i).get(0);
+            function[i][i] = function[i-1][i-1] + triangle.get(i).get(i);
+        }
+        
+        // function - function[i][j] = min(function[i-1][j], function[i-1][j-1]) + triangle.get(i).get(j)
+        for (int i = 2; i < row; i++) {
+            for (int j = 1; j < i; j++) {       // remember j < i
+                function[i][j] = Math.min(function[i-1][j], function[i-1][j-1]) + triangle.get(i).get(j);
+            }
+        }
+        
+        // end - min(function[row-1][0] - function[row-1][col-1])
+        int min = Integer.MAX_VALUE;
+        for (int i = 0; i < col; i++) {
+            min = Math.min(min, function[row-1][i]);
+        }
+        return min;
+    }
+}
