@@ -1,0 +1,33 @@
+class Solution {
+    public boolean wordBreak(String s, List<String> wordDict) {
+        if (s == null || s.length() == 0) return true;
+        
+        int maxLength = longestLength(wordDict);
+        boolean[] canBreak = new boolean[s.length() + 1];
+        
+        canBreak[0] = true;
+        for (int i = 1; i <= s.length(); i++) {
+            canBreak[i] = false;
+            for (int lastWordLength = 1; lastWordLength <= maxLength && lastWordLength <= i; lastWordLength++) {
+                if (canBreak[i - lastWordLength] == false) {
+                    continue;
+                }
+                String word = s.substring(i - lastWordLength, i);
+                if (wordDict.contains(word)) {
+                    canBreak[i] = true;
+                    break;
+                }
+            }
+        }
+        
+        return canBreak[s.length()];
+    }
+    
+    private int longestLength(List<String> wordDict) {
+        int max = 0;
+        for (String each : wordDict) {
+            max = Math.max(max, each.length());
+        }
+        return max;
+    }
+}
