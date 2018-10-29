@@ -1,0 +1,70 @@
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    private ListNode findMid(ListNode head) {
+        if (head == null) return null;
+        ListNode slow = head, fast = head.next;
+        while (fast != null && fast.next != null && fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
+    }
+    
+    private ListNode reverse(ListNode head) {
+        if (head == null || head.next == null) return head;
+        ListNode prev = null;
+        ListNode curt = head;
+        
+        while (curt != null) {
+            ListNode temp = curt.next;
+            curt.next = prev;
+            prev = curt;
+            curt = temp;
+        }
+        
+        return prev;
+    }
+    
+    private void merge (ListNode head1, ListNode head2) {
+        ListNode tail = new ListNode(0);
+        int count = 1;
+        
+        while (head1 != null && head2 != null) {
+            if (count % 2 == 1) {
+                tail.next = head1;
+                head1 = head1.next;
+            } else {
+                tail.next = head2;
+                head2 = head2.next;
+            }
+            tail = tail.next;
+            count++;
+        }
+        if (head1 != null) {
+            tail.next = head1;
+        } else {
+            tail.next = head2;
+        }
+    }
+    
+    public void reorderList(ListNode head) {
+        if (head == null) return;
+        
+        // find middle
+        ListNode mid = findMid(head);
+        
+        // reverse
+        ListNode head2 = reverse(mid.next);
+        mid.next = null;
+        
+        // merge
+        merge(head, head2);
+    }
+}
