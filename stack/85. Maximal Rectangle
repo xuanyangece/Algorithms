@@ -1,0 +1,51 @@
+/* another DP method haven't seen yet */
+
+
+class Solution {
+    public int maximalRectangle(char[][] matrix) {
+        if (matrix == null) return 0;
+        
+        // get column and row, prerare heights array
+        int max = 0;
+        int n = matrix.length;
+        int m = n == 0 ? 0 : matrix[0].length;
+        int heights[][] = new int[n][m + 1];    // **VERY IMPORTANT**: m + 1 for all heights to pop
+        
+        // initialize heights array
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (matrix[i][j] == '0') {
+                    heights[i][j] = 0;
+                } else {
+                    heights[i][j] = i == 0 ? 1 : heights[i - 1][j] + 1;
+                }
+            }
+        }
+        
+        // calculate max row by row
+        for (int i = 0; i < n; i++) {
+            max = Math.max(max, getMaxInHi(heights[i]));
+        }
+        
+        // end
+        return max;
+    }
+    
+    // using rising stack
+    private int getMaxInHi(int[] heights) {
+        int max = 0;
+        int i = 0;
+        Stack<Integer> stack = new Stack<Integer>();    // stack stores index, which stands for width
+        
+        while(i < heights.length) {
+            if (stack.isEmpty() || heights[i] >= heights[stack.peek()]) {
+                stack.push(i++);
+            } else {
+                max = Math.max(max, heights[stack.pop()]
+                              * (stack.isEmpty() ? i : i - stack.peek() - 1));
+            }
+        }
+        
+        return max;
+    }
+}
