@@ -1,0 +1,18 @@
+class Solution {
+    public int coinChange(int[] coins, int amount) {
+        if (amount <= 0) return 0;
+        
+        int[] f = new int[amount + 1];
+        Arrays.fill(f, amount + 1);
+        f[0] = 0;
+        
+        for (int i = 1; i <= amount; i++) {
+            for (int j = 0; j < coins.length; j++) {
+                if (i >= coins[j]) f[i] = Math.min(f[i], f[i-coins[j]] + 1);
+            }
+        }
+        
+        if (f[amount] > amount) return -1;
+        else return f[amount];
+    }
+}
