@@ -1,3 +1,53 @@
+class LRUCache {
+public:
+    LRUCache(int capacity) : _capacity(capacity) {}
+    
+    int get(int key) {
+        auto it = cache.find(key);
+        if (it == cache.end()) return -1;
+        touch(it);
+        return it->second.first;
+    }
+    
+    void put(int key, int value) {
+        auto it = cache.find(key);
+        if (it != cache.end()) touch(it);
+        else {
+            if (used.size() == _capacity) {
+                cache.erase(used.back());
+                used.pop_back();
+            }
+            used.push_front(key);
+        }
+        cache[key] = {value, used.begin()};
+    }
+    
+private:
+    typedef list<int> LI;
+    typedef pair<int, LI::iterator> PII;
+    typedef unordered_map<int, PII> HIPII;
+    
+    HIPII cache;
+    LI used;
+    int _capacity;
+    
+    void touch(HIPII::iterator it) {
+        int key = it->first;
+        // change used
+        used.erase(it->second.second);
+        used.push_front(key);
+        // change cache
+        it->second.second = used.begin();
+    }
+};
+
+
+
+
+
+
+
+
 class DLinkedListNode {
     DLinkedListNode prev;
     DLinkedListNode next;
