@@ -1,0 +1,43 @@
+class Solution {
+    public List<String> removeInvalidParentheses(String s) {
+        
+        int left = 0, right = 0;
+        for (char c: s.toCharArray()) {
+            if (c == '(') {
+                left++;
+            } else if (c == ')') {
+                if (left != 0) left--;
+                else right++;
+            }
+        }
+        
+        HashSet<String> ans = new HashSet<String>();
+        dfs(s, 0, new StringBuilder(), ans, left, right, 0);
+        
+        return new ArrayList<String>(ans);
+    }
+    
+    private void dfs(String s, int position, StringBuilder sb, HashSet set, int left, int right, int match) {
+        if (match < 0 || left < 0 || right < 0) return;
+        
+        if (position == s.length()) {
+            if (match == 0 && left == 0 && right == 0) set.add(sb.toString());
+            return;
+        }
+        
+        char c = s.charAt(position);
+        int len = sb.length();
+        
+        if (c == '(') {
+            dfs(s, position + 1, sb, set, left - 1, right, match);  // lose it
+            dfs(s, position + 1, sb.append(c), set, left, right, match + 1);  // use it
+        } else if (c == ')') {
+            dfs(s, position + 1, sb, set, left, right - 1, match);  // lose it
+            dfs(s, position + 1, sb.append(c), set, left, right, match - 1);  // use it
+        } else {
+            dfs(s, position + 1, sb.append(c), set, left, right, match);
+        }
+        
+        sb.setLength(len);
+    }
+}
